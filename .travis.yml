@@ -19,6 +19,7 @@ notifications:
     on_failure: change
 before_install:
   - cp scripts/travis-tool.sh fakepackage
+  - cp scripts/create-osx.sh fakepackage
   - cd fakepackage
   - ./create-osx.sh
   - ./travis-tool.sh bootstrap
