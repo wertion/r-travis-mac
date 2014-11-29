@@ -21,6 +21,7 @@ before_install:
   - cp scripts/travis-tool.sh fakepackage
   - cp scripts/create-osx.sh fakepackage
   - cd fakepackage
+  - chmod 755 ./create-osx.sh
   - ./create-osx.sh
   - ./travis-tool.sh bootstrap
 before_script:
