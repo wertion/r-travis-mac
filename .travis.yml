@@ -20,6 +20,7 @@ notifications:
 before_install:
   - cp scripts/travis-tool.sh fakepackage
   - cd fakepackage
+  - ./create-osx.sh
   - ./travis-tool.sh bootstrap
 before_script:
   - ./travis-tool.sh dump_sysinfo
