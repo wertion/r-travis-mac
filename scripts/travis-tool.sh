@@ -75,6 +75,7 @@ BootstrapLinux() {
     bison \
     debhelper \
     default-jdk \
+    gfortran \
     groff-base \
     libblas-dev \
     libbz2-dev \
