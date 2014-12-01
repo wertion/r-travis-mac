@@ -70,7 +70,7 @@ BootstrapLinux() {
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
     sudo apt-get update -qq
     sudo apt-get install -qq gcc-4.9
-    apt-get install -y --no-install-recommends \
+    sudo apt-get install -y --no-install-recommends \
     bash-completion \
     bison \
     debhelper \
