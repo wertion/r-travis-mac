@@ -134,7 +134,7 @@ BootstrapLinux() {
                --with-readline \
                --without-recommended-packages \
                --program-suffix=dev \
-               --disable-openmp \
+               --disable-openmp 
     make 
     sudo make install 
     sudo make clean
