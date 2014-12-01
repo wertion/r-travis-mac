@@ -122,12 +122,12 @@ BootstrapLinux() {
     R_PRINTCMD=/usr/bin/lpr 
     LIBnn=lib 
     AWK=/usr/bin/awk 
-    CFLAGS="-pipe -std=gnu99 -Wall -pedantic -O3" 
-    CXXFLAGS="-pipe -Wall -pedantic -O3" 
-    CC="gcc -fsanitize=address,undefined" 
-    CXX="g++ -fsanitize=address,undefined" 
-    FC="gfortran -fsanitize=address,undefined" 
-    F77="gfortran -fsanitize=address,undefined" 
+    CFLAGS=" -fsanitize=address,undefined -pipe -std=gnu99 -Wall -pedantic -O3" 
+    CXXFLAGS=" -fsanitize=address,undefined -pipe -Wall -pedantic -O3" 
+    CC="gcc" 
+    CXX="g++" 
+    FC="gfortran" 
+    F77="gfortran" 
     ./configure --enable-R-shlib \
                --without-blas \
                --without-lapack \
