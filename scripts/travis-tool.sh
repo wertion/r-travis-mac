@@ -100,7 +100,6 @@ BootstrapLinux() {
     texlive-generic-recommended \
     texlive-latex-base \
     texlive-latex-extra \
-    texlive-latex-recommended \
     tk8.5-dev \
     x11proto-core-dev \
     xauth \
