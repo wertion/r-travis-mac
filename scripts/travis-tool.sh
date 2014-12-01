@@ -67,12 +67,79 @@ BootstrapLinux() {
     # Update after adding all repositories.  Retry several times to work around
     # flaky connection to Launchpad PPAs.
     Retry sudo apt-get update -qq
-
-    # Install an R development environment. qpdf is also needed for
-    # --as-cran checks:
-    #   https://stat.ethz.ch/pipermail/r-help//2012-September/335676.html
-    Retry sudo apt-get install --no-install-recommends r-base-dev r-recommended qpdf
-
+    sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    sudo apt-get update -qq
+    sudo apt-get install -qq gcc-4.9
+    apt-get install -y --no-install-recommends \
+    bash-completion \
+    bison \
+    debhelper \
+    default-jdk \
+    groff-base \
+    libblas-dev \
+    libbz2-dev \
+    libcairo2-dev \
+    libjpeg-dev \
+    liblapack-dev \
+    liblzma-dev \
+    libncurses5-dev \
+    libpango1.0-dev \
+    libpcre3-dev \
+    libpng-dev \
+    libreadline-dev \
+    libtiff5-dev \
+    libx11-dev \
+    libxt-dev \
+    mpack \
+    subversion \
+    tcl8.5-dev \
+    texinfo \
+    texlive-base \
+    texlive-extra-utils \
+    texlive-fonts-extra \
+    texlive-fonts-recommended \
+    texlive-generic-recommended \
+    texlive-latex-base \
+    texlive-latex-extra \
+    texlive-latex-recommended \
+    tk8.5-dev \
+    x11proto-core-dev \
+    xauth \
+    xdg-utils \
+    xfonts-base \
+    xvfb \
+    zlib1g-dev 
+   
+    cd /tmp 
+    svn co http://svn.r-project.org/R/trunk R-devel 
+    cd /tmp/R-devel
+    R_PAPERSIZE=letter 
+    R_BATCHSAVE="--no-save --no-restore" 
+    R_BROWSER=xdg-open 
+    PAGER=/usr/bin/pager 
+    PERL=/usr/bin/perl 
+    R_UNZIPCMD=/usr/bin/unzip 
+    R_ZIPCMD=/usr/bin/zip 
+    R_PRINTCMD=/usr/bin/lpr 
+    LIBnn=lib 
+    AWK=/usr/bin/awk 
+    CFLAGS="-pipe -std=gnu99 -Wall -pedantic -O3" 
+    CXXFLAGS="-pipe -Wall -pedantic -O3" 
+    CC="gcc -fsanitize=address,undefined" 
+    CXX="g++ -fsanitize=address,undefined" 
+    FC="gfortran -fsanitize=address,undefined" 
+    F77="gfortran -fsanitize=address,undefined" 
+    ./configure --enable-R-shlib \
+               --without-blas \
+               --without-lapack \
+               --with-readline \
+               --without-recommended-packages \
+               --program-suffix=dev \
+               --disable-openmp \
+    make 
+    sudo make install 
+    sudo make clean
+    sudo echo 'options("repos"="http://cran.rstudio.com")' >> /usr/local/lib/R/etc/Rprofile.site
     # Change permissions for /usr/local/lib/R/site-library
     # This should really be via 'staff adduser travis staff'
     # but that may affect only the next shell
