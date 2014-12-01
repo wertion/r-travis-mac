@@ -70,7 +70,7 @@ BootstrapLinux() {
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
     sudo apt-get update -qq
     sudo apt-get install -qq gcc-4.9
-    sudo apt-get install -y --no-install-recommends \
+    sudo apt-get install -y  \
     bash-completion \
     bison \
     debhelper \
@@ -87,7 +87,6 @@ BootstrapLinux() {
     libpcre3-dev \
     libpng-dev \
     libreadline-dev \
-    libtiff5-dev \
     libx11-dev \
     libxt-dev \
     mpack \
