@@ -105,7 +105,7 @@ BootstrapLinux() {
     xfonts-base \
     xvfb \
     zlib1g-dev 
-    sudo apt-get cran-base
+    sudo apt-get install -y -qq cran-base
     
     cd /tmp 
     svn co http://svn.r-project.org/R/trunk R-devel 
