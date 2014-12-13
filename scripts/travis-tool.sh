@@ -139,7 +139,6 @@ BootstrapLinux() {
     make 
     sudo make install 
     sudo make clean
-    sudo echo 'options("repos"="http://cran.rstudio.com")' >> /usr/local/lib/R/etc/Rprofile.site
     sudo mkdir ~/.R
     sudo echo -e "CC = clang -std=gnu99 -fsanitize=undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=undefined -fno-omit-frame-pointer\nPKG_LIBS = /usr/lib/llvm-3.4/lib/clang/3.4/lib/linux/libclang_rt.ubsan_cxx-x86_64.a"  > ~/.R/Makevars
     # Change permissions for /usr/local/lib/R/site-library
