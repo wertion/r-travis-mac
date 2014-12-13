@@ -128,7 +128,7 @@ BootstrapLinux() {
     CXX="clang++ -std=c++11 -fsanitize=undefined"
     CXXFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native"
     FC=${F77}
-    echo -e "CC = clang -std=gnu99 -fsanitize=undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=undefined -fno-omit-frame-pointer\nPKG_LIBS = /usr/lib/llvm-3.4/lib/clang/3.4/lib/linux/libclang_rt.ubsan_cxx-x86_64.a"  > ~/.R/Makevars
+    
     ./configure --enable-R-shlib \
                --without-blas \
                --without-lapack \
@@ -140,6 +140,7 @@ BootstrapLinux() {
     sudo make install 
     sudo make clean
     sudo echo 'options("repos"="http://cran.rstudio.com")' >> /usr/local/lib/R/etc/Rprofile.site
+    sudo echo -e "CC = clang -std=gnu99 -fsanitize=undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=undefined -fno-omit-frame-pointer\nPKG_LIBS = /usr/lib/llvm-3.4/lib/clang/3.4/lib/linux/libclang_rt.ubsan_cxx-x86_64.a"  > ~/.R/Makevars
     # Change permissions for /usr/local/lib/R/site-library
     # This should really be via 'staff adduser travis staff'
     # but that may affect only the next shell
