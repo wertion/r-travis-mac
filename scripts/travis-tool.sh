@@ -66,7 +66,7 @@ BootstrapLinux() {
 
     # Update after adding all repositories.  Retry several times to work around
     # flaky connection to Launchpad PPAs.
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get -qq update
 
     sudo apt-get install -y --no-install-recommends \
@@ -107,8 +107,8 @@ BootstrapLinux() {
     xvfb \
     zlib1g-dev 
   
-    sudo apt-get -qq install gcc-4.9 \
-    sudo apt-get install -qq gfortran-4.9 \
+    sudo apt-get -qq install gcc-4.9 
+    sudo apt-get install -qq gfortran-4.9 
     
     cd /tmp 
     svn co http://svn.r-project.org/R/trunk R-devel 
