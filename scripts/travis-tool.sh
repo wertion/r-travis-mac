@@ -108,7 +108,6 @@ BootstrapLinux() {
     zlib1g-dev 
   
     sudo apt-get -qq install gcc-4.9 
-    sudo apt-get install -qq gfortran-4.9 
     
     cd /tmp 
     svn co http://svn.r-project.org/R/trunk R-devel 
