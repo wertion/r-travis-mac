@@ -66,90 +66,17 @@ BootstrapLinux() {
 
     # Update after adding all repositories.  Retry several times to work around
     # flaky connection to Launchpad PPAs.
-    sudo apt-get -qq update
-    sudo apt-get install -y subversion r-base-dev clang-3.4 texlive-fonts-extra texlive-latex-extra
-    sudo apt-get install -y --no-install-recommends \
-    bash-completion \
-    bison \
-    debhelper \
-    default-jdk \
-    groff-base \
-    libblas-dev \
-    libbz2-dev \
-    libcairo2-dev \
-    libjpeg-dev \
-    liblapack-dev \
-    liblzma-dev \
-    libncurses5-dev \
-    libpango1.0-dev \
-    libpcre3-dev \
-    libpng-dev \
-    libreadline-dev \
-    libx11-dev \
-    libxt-dev \
-    mpack \
-    subversion \
-    tcl8.5-dev \
-    texinfo \
-    texlive-base \
-    texlive-extra-utils \
-    texlive-fonts-extra \
-    texlive-fonts-recommended \
-    texlive-generic-recommended \
-    texlive-latex-base \
-    texlive-latex-extra \
-    tk8.5-dev \
-    x11proto-core-dev \
-    xauth \
-    xdg-utils \
-    xfonts-base \
-    xvfb \
-    zlib1g-dev 
+    Retry sudo apt-get update -qq
 
-    
-    cd /tmp 
-    svn co http://svn.r-project.org/R/trunk R-devel 
-    cd /tmp/R-devel
-    R_PAPERSIZE=letter 
-    R_BATCHSAVE="--no-save --no-restore" 
-    R_BROWSER=xdg-open 
-    PAGER=/usr/bin/pager 
-    PERL=/usr/bin/perl 
-    R_UNZIPCMD=/usr/bin/unzip 
-    R_ZIPCMD=/usr/bin/zip 
-    R_PRINTCMD=/usr/bin/lpr 
-    LIBnn=lib 
-    AWK=/usr/bin/awk 
-    CC="clang -std=gnu99 -fsanitize=undefined"
-    CFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native"
-    F77="gfortran"
-    LIBnn="lib64"
-    LDFLAGS="-L/usr/local/lib64 -L/usr/local/lib"
-    CXX="clang++ -std=c++11 -fsanitize=undefined"
-    CXXFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native"
-    FC=${F77}
-    
-    ./configure --enable-R-shlib \
-               --without-blas \
-               --without-lapack \
-               --with-readline \
-               --without-recommended-packages \
-               --program-suffix=dev \
-               --disable-openmp 
-    make 
-    sudo make install 
-    sudo make clean
+    # Install an R development environment. qpdf is also needed for
+    # --as-cran checks:
+    #   https://stat.ethz.ch/pipermail/r-help//2012-September/335676.html
+    Retry sudo apt-get install --no-install-recommends r-base-dev r-recommended qpdf
 
     # Change permissions for /usr/local/lib/R/site-library
     # This should really be via 'staff adduser travis staff'
     # but that may affect only the next shell
     sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library
-    mkdir ~/.R 
-    echo -e "CC = clang -std=gnu99 -fsanitize=undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=undefined -fno-omit-frame-pointer"  > ~/.R/Makevars 
-    sudo apt-get -y install libcurl4-openssl-dev
-    Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' codetools
-    Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' Rcpp
-    Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' devtools
 
     # Process options
     BootstrapLinuxOptions
@@ -168,6 +95,88 @@ BootstrapLinuxOptions() {
     fi
     if [[ -n "$BOOTSTRAP_PANDOC" ]]; then
         InstallPandoc 'linux/debian/x86_64'
+    fi
+    if [[ -n "$BOOTSTRAP_UBSAN" ]]; then
+        sudo apt-get -qq update
+        sudo apt-get install -y subversion r-base-dev clang-3.4 texlive-fonts-extra texlive-latex-extra
+        sudo apt-get install -y --no-install-recommends \
+        bash-completion \
+        bison \
+        debhelper \
+        default-jdk \
+        groff-base \
+        libblas-dev \
+        libbz2-dev \
+        libcairo2-dev \
+        libjpeg-dev \
+        liblapack-dev \
+        liblzma-dev \
+        libncurses5-dev \
+        libpango1.0-dev \
+        libpcre3-dev \
+        libpng-dev \
+        libreadline-dev \
+        libx11-dev \
+        libxt-dev \
+        mpack \
+        subversion \
+        tcl8.5-dev \
+        texinfo \
+        texlive-base \
+        texlive-extra-utils \
+        texlive-fonts-extra \
+        texlive-fonts-recommended \
+        texlive-generic-recommended \
+        texlive-latex-base \
+        texlive-latex-extra \
+        tk8.5-dev \
+        x11proto-core-dev \
+        xauth \
+        xdg-utils \
+        xfonts-base \
+        xvfb \
+        zlib1g-dev 
+
+       cd /tmp 
+       svn co http://svn.r-project.org/R/trunk R-devel 
+       cd /tmp/R-devel
+       R_PAPERSIZE=letter 
+       R_BATCHSAVE="--no-save --no-restore" 
+       R_BROWSER=xdg-open 
+       PAGER=/usr/bin/pager 
+       PERL=/usr/bin/perl 
+       R_UNZIPCMD=/usr/bin/unzip 
+       R_ZIPCMD=/usr/bin/zip 
+       R_PRINTCMD=/usr/bin/lpr 
+       LIBnn=lib 
+       AWK=/usr/bin/awk 
+       CC="clang -std=gnu99 -fsanitize=undefined"
+       CFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native"
+       F77="gfortran"
+       LIBnn="lib64"
+       LDFLAGS="-L/usr/local/lib64 -L/usr/local/lib"
+       CXX="clang++ -std=c++11 -fsanitize=undefined"
+       CXXFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native"
+       FC=${F77}
+    
+       ./configure --enable-R-shlib \
+                   --without-blas \
+                   --without-lapack \
+                   --with-readline \
+                   --without-recommended-packages \
+                   --program-suffix=dev \
+                   --disable-openmp 
+        make 
+        sudo make install 
+        sudo make clean
+
+        sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library
+        mkdir ~/.R 
+        echo -e "CC = clang -std=gnu99 -fsanitize=undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=undefined -fno-omit-frame-pointer"  > ~/.R/Makevars 
+        sudo apt-get -y install libcurl4-openssl-dev
+        Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' codetools
+        Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' Rcpp
+        Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' devtools
     fi
 }
 
