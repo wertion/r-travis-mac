@@ -66,48 +66,9 @@ BootstrapLinux() {
 
     # Update after adding all repositories.  Retry several times to work around
     # flaky connection to Launchpad PPAs.
-    sudo add-apt-repository -y "ppa:ubuntu-toolchain-r/test"
-    sudo apt-get -qq update
 
-    sudo apt-get install -y --no-install-recommends \
-    bash-completion \
-    bison \
-    debhelper \
-    default-jdk \
-    groff-base \
-    libblas-dev \
-    libbz2-dev \
-    libcairo2-dev \
-    libjpeg-dev \
-    liblapack-dev \
-    liblzma-dev \
-    libncurses5-dev \
-    libpango1.0-dev \
-    libpcre3-dev \
-    libpng-dev \
-    libreadline-dev \
-    libx11-dev \
-    libxt-dev \
-    mpack \
-    subversion \
-    tcl8.5-dev \
-    texinfo \
-    texlive-base \
-    texlive-extra-utils \
-    texlive-fonts-extra \
-    texlive-fonts-recommended \
-    texlive-generic-recommended \
-    texlive-latex-base \
-    texlive-latex-extra \
-    tk8.5-dev \
-    x11proto-core-dev \
-    xauth \
-    xdg-utils \
-    xfonts-base \
-    xvfb \
-    zlib1g-dev 
-  
-    sudo apt-get -qq install gcc-4.9 
+    sudo apt-get install valgrind subversion r-base-dev clang-3.4 texlive-fonts-extra texlive-latex-extra
+    sudo apt-get cran-base
     
     cd /tmp 
     svn co http://svn.r-project.org/R/trunk R-devel 
@@ -122,10 +83,15 @@ BootstrapLinux() {
     R_PRINTCMD=/usr/bin/lpr 
     LIBnn=lib 
     AWK=/usr/bin/awk 
-    CFLAGS=" -fsanitize=address,undefined -pipe -std=gnu99 -Wall -pedantic -O3" 
-    CXXFLAGS=" -fsanitize=address,undefined -pipe -Wall -pedantic -O3" 
-    CC="gcc" 
-    CXX="g++" 
+    CC="clang -std=gnu99 -fsanitize=undefined"
+    CFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native"
+    F77="gfortran"
+    LIBnn="lib64"
+    LDFLAGS="-L/usr/local/lib64 -L/usr/local/lib"
+    CXX="clang++ -std=c++11 -fsanitize=undefined"
+    CXXFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native"
+    FC=${F77}
+    echo -e "CC = clang -std=gnu99 -fsanitize=undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=undefined -fno-omit-frame-pointer\nPKG_LIBS = /usr/lib/llvm-3.4/lib/clang/3.4/lib/linux/libclang_rt.ubsan_cxx-x86_64.a"  > ~/.R/Makevars
     ./configure --enable-R-shlib \
                --without-blas \
                --without-lapack \
