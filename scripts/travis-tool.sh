@@ -144,6 +144,8 @@ BootstrapLinux() {
     # This should really be via 'staff adduser travis staff'
     # but that may affect only the next shell
     sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library
+    mkdir ~/.R 
+    sudo sh -c "echo -e 'CC = clang -std=gnu99 -fsanitize=undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=undefined -fno-omit-frame-pointer\nPKG_LIBS = /usr/lib/llvm-3.4/lib/clang/3.4/lib/linux/libclang_rt.ubsan_cxx-x86_64.a'  > ~/.R/Makevars" 
 
 
     # Process options
