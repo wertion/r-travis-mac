@@ -146,7 +146,8 @@ BootstrapLinux() {
     sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library
     mkdir ~/.R 
     echo -e "CC = clang -std=gnu99 -fsanitize=undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=undefined -fno-omit-frame-pointer"  > ~/.R/Makevars 
-
+    sudo apt-get -y install libcurl4-openssl-dev
+    
 
     # Process options
     BootstrapLinuxOptions
