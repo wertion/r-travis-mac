@@ -147,7 +147,8 @@ BootstrapLinux() {
     mkdir ~/.R 
     echo -e "CC = clang -std=gnu99 -fsanitize=undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=undefined -fno-omit-frame-pointer"  > ~/.R/Makevars 
     sudo apt-get -y install libcurl4-openssl-dev
-    
+    Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' Rcpp
+    Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' devtools
 
     # Process options
     BootstrapLinuxOptions
