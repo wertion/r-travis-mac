@@ -67,7 +67,44 @@ BootstrapLinux() {
     # Update after adding all repositories.  Retry several times to work around
     # flaky connection to Launchpad PPAs.
 
-    sudo apt-get install valgrind subversion r-base-dev clang-3.4 texlive-fonts-extra texlive-latex-extra
+    sudo apt-get install -y --no-install-recommends subversion r-base-dev clang-3.4 
+    sudo apt-get install -y --no-install-recommends \
+    bash-completion \
+    bison \
+    debhelper \
+    default-jdk \
+    groff-base \
+    libblas-dev \
+    libbz2-dev \
+    libcairo2-dev \
+    libjpeg-dev \
+    liblapack-dev \
+    liblzma-dev \
+    libncurses5-dev \
+    libpango1.0-dev \
+    libpcre3-dev \
+    libpng-dev \
+    libreadline-dev \
+    libx11-dev \
+    libxt-dev \
+    mpack \
+    subversion \
+    tcl8.5-dev \
+    texinfo \
+    texlive-base \
+    texlive-extra-utils \
+    texlive-fonts-extra \
+    texlive-fonts-recommended \
+    texlive-generic-recommended \
+    texlive-latex-base \
+    texlive-latex-extra \
+    tk8.5-dev \
+    x11proto-core-dev \
+    xauth \
+    xdg-utils \
+    xfonts-base \
+    xvfb \
+    zlib1g-dev 
     sudo apt-get cran-base
     
     cd /tmp 
