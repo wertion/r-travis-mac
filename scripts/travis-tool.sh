@@ -66,8 +66,8 @@ BootstrapLinux() {
 
     # Update after adding all repositories.  Retry several times to work around
     # flaky connection to Launchpad PPAs.
-  - sudo add-apt-repository -y "ppa:ubuntu-toolchain-r/test"
-  - sudo apt-get -qq update
+    sudo add-apt-repository -y "ppa:ubuntu-toolchain-r/test"
+    sudo apt-get -qq update
 
     sudo apt-get install -y --no-install-recommends \
     bash-completion \
