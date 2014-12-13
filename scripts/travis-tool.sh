@@ -67,7 +67,7 @@ BootstrapLinux() {
     # Update after adding all repositories.  Retry several times to work around
     # flaky connection to Launchpad PPAs.
     sudo apt-get -qq update
-    sudo apt-get install -y --no-install-recommends subversion r-base-dev clang-3.5
+    sudo apt-get install -y --no-install-recommends subversion r-base-dev clang-3.4
     sudo apt-get install -y --no-install-recommends \
     bash-completion \
     bison \
