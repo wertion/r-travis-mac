@@ -66,11 +66,9 @@ BootstrapLinux() {
 
     # Update after adding all repositories.  Retry several times to work around
     # flaky connection to Launchpad PPAs.
-    Retry sudo apt-get update -qq
-    sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-    sudo apt-get update -qq
-    sudo apt-get install -qq gcc-4.9
-    sudo apt-get install -qq gfortran-4.9
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get -qq update
+
     sudo apt-get install -y --no-install-recommends \
     bash-completion \
     bison \
@@ -108,7 +106,10 @@ BootstrapLinux() {
     xfonts-base \
     xvfb \
     zlib1g-dev 
-
+  
+    sudo apt-get -qq install gcc-4.9 \
+    sudo apt-get install -qq gfortran-4.9 \
+    
     cd /tmp 
     svn co http://svn.r-project.org/R/trunk R-devel 
     cd /tmp/R-devel
@@ -126,8 +127,6 @@ BootstrapLinux() {
     CXXFLAGS=" -fsanitize=address,undefined -pipe -Wall -pedantic -O3" 
     CC="gcc" 
     CXX="g++" 
-    FC="gfortran" 
-    F77="gfortran" 
     ./configure --enable-R-shlib \
                --without-blas \
                --without-lapack \
