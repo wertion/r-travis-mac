@@ -150,12 +150,12 @@ BootstrapLinuxOptions() {
        R_PRINTCMD=/usr/bin/lpr 
        LIBnn=lib 
        AWK=/usr/bin/awk 
-       CC="clang -std=gnu99 -fsanitize=undefined"
+       CC="clang -std=gnu99 -fsanitize=undefined -fno-omit-frame-pointer -Wall -pedantic -mtune=native -pipe"
        CFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native"
        F77="gfortran"
        LIBnn="lib64"
        LDFLAGS="-L/usr/local/lib64 -L/usr/local/lib"
-       CXX="clang++ -std=c++11 -fsanitize=undefined"
+       CXX="clang++ -std=c++11 -fsanitize=undefined -fno-omit-frame-pointer -Wall -pedantic -mtune=native -pipe"
        CXXFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native"
        FC=${F77}
     
