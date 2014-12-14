@@ -76,7 +76,7 @@ BootstrapLinux() {
     # Change permissions for /usr/local/lib/R/site-library
     # This should really be via 'staff adduser travis staff'
     # but that may affect only the next shell
-    sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library
+    sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library 
 
     # Process options
     BootstrapLinuxOptions
@@ -149,27 +149,24 @@ BootstrapLinuxOptions() {
        LIBnn=lib 
        AWK=/usr/bin/awk 
        echo -e ' \
-       CC="clang -std=gnu99 -fsanitize=address,undefined -fno-omit-frame-pointer -Wall -pedantic -mtune=native" \
-       \nCFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native" \
+       CC="clang -std=gnu99 -fsanitize=address,undefined" \
+       \nCFLAGS="-g -pipe -O2" \
        \nF77="gfortran" \
-       \nLIBnn="lib64" \
+       \nLIBnn="lib" \
        \nLDFLAGS="-L/usr/local/lib64 -L/usr/local/lib" \
        \nCXX="clang++ -std=c++11 -fsanitize=address,undefined" \
-       \nCXXFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native" \
+       \nCXXFLAGS="-g -pipe -O2" \
        \nFC=${F77}' > config.site
     
        ./configure --enable-R-shlib \
-                   --without-blas \
-                   --without-lapack \
-                   --with-readline \
                    --without-recommended-packages \
                    --program-suffix=dev \
-                   --disable-openmp 
-        make 1>makelog.txt
+        make -s
         sudo make install 
         sudo make clean
 
-        sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library
+        sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library 
+        
         mkdir ~/.R 
         echo -e "CC = clang -std=gnu99 -fsanitize=address,undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=address,undefined -fno-omit-frame-pointer"  > ~/.R/Makevars 
         sudo apt-get -y install libcurl4-openssl-dev
@@ -465,3 +462,5 @@ case $COMMAND in
         DumpLogsByExtension "$@"
         ;;
 esac
+
+
