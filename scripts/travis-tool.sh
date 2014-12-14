@@ -148,14 +148,15 @@ BootstrapLinuxOptions() {
        R_PRINTCMD=/usr/bin/lpr 
        LIBnn=lib 
        AWK=/usr/bin/awk 
-       CC="clang -std=gnu99 -fsanitize=address,undefined -fno-omit-frame-pointer -Wall -pedantic -mtune=native -pipe"
-       CFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native"
-       F77="gfortran"
-       LIBnn="lib64"
-       LDFLAGS="-L/usr/local/lib64 -L/usr/local/lib"
-       CXX="clang++ -std=c++11 -fsanitize=address,undefined -fno-omit-frame-pointer -Wall -pedantic -mtune=native -pipe"
-       CXXFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native"
-       FC=${F77}
+       echo -e ' \
+       CC="clang -std=gnu99 -fsanitize=address,undefined -fno-omit-frame-pointer -Wall -pedantic -mtune=native" \
+       \nCFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native" \
+       \nF77="gfortran" \
+       \nLIBnn="lib64" \
+       \nLDFLAGS="-L/usr/local/lib64 -L/usr/local/lib" \
+       \nCXX="clang++ -std=c++11 -fsanitize=address,undefined" \
+       \nCXXFLAGS="-fno-omit-frame-pointer -Wall -pedantic -mtune=native" \
+       \nFC=${F77}' > config.site
     
        ./configure --enable-R-shlib \
                    --without-blas \
