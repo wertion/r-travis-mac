@@ -98,8 +98,8 @@ BootstrapLinuxOptions() {
     fi
     if [[ -n "$BOOTSTRAP_UBSAN" ]]; then
         sudo apt-get -qq update
-        sudo apt-get install -y subversion r-base-dev clang-3.4 texlive-fonts-extra texlive-latex-extra
-        sudo apt-get install -y --no-install-recommends \
+        sudo apt-get install -y -qq subversion r-base-dev clang-3.4 texlive-fonts-extra texlive-latex-extra
+        sudo apt-get install -y -qq --no-install-recommends \
         bash-completion \
         bison \
         debhelper \
@@ -124,11 +124,9 @@ BootstrapLinuxOptions() {
         texinfo \
         texlive-base \
         texlive-extra-utils \
-        texlive-fonts-extra \
         texlive-fonts-recommended \
         texlive-generic-recommended \
         texlive-latex-base \
-        texlive-latex-extra \
         tk8.5-dev \
         x11proto-core-dev \
         xauth \
@@ -166,7 +164,7 @@ BootstrapLinuxOptions() {
                    --without-recommended-packages \
                    --program-suffix=dev \
                    --disable-openmp 
-        make 
+        make -s
         sudo make install 
         sudo make clean
 
@@ -175,6 +173,7 @@ BootstrapLinuxOptions() {
         echo -e "CC = clang -std=gnu99 -fsanitize=address,undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=address,undefined -fno-omit-frame-pointer"  > ~/.R/Makevars 
         sudo apt-get -y install libcurl4-openssl-dev
         Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' codetools
+        Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' MASS
         Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' Rcpp
         Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' devtools
     fi
