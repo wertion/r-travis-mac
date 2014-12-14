@@ -136,7 +136,7 @@ BootstrapLinuxOptions() {
         zlib1g-dev 
 
        cd /tmp 
-       svn co http://svn.r-project.org/R/trunk R-devel 
+       svn co --quiet http://svn.r-project.org/R/trunk R-devel 
        cd /tmp/R-devel
        R_PAPERSIZE=letter 
        R_BATCHSAVE="--no-save --no-restore" 
