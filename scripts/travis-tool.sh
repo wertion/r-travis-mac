@@ -160,7 +160,7 @@ BootstrapLinuxOptions() {
     
        ./configure --enable-R-shlib \
                    --without-recommended-packages \
-                   --program-suffix=dev \
+                   --program-suffix=dev 
         make -s
         sudo make install 
         sudo make clean
