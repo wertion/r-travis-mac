@@ -164,7 +164,7 @@ BootstrapLinuxOptions() {
                    --without-recommended-packages \
                    --program-suffix=dev \
                    --disable-openmp 
-        make -s
+        make 1>makelog.txt
         sudo make install 
         sudo make clean
 
