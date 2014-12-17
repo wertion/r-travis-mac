@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 
 sudo apt-get -qq update
 sudo apt-get install -y -qq subversion r-base-dev clang-3.4 texlive-fonts-extra texlive-latex-extra
@@ -36,21 +36,21 @@ xauth \
 xdg-utils \
 xfonts-base \
 xvfb \
-zlib1g-dev
+zlib1g-dev 
 
-cd /tmp
-svn co --quiet http://svn.r-project.org/R/trunk R-devel
+cd /tmp 
+svn co --quiet http://svn.r-project.org/R/trunk R-devel 
 cd /tmp/R-devel
-R_PAPERSIZE=letter
-R_BATCHSAVE="--no-save --no-restore"
-R_BROWSER=xdg-open
-PAGER=/usr/bin/pager
-PERL=/usr/bin/perl
-R_UNZIPCMD=/usr/bin/unzip
-R_ZIPCMD=/usr/bin/zip
-R_PRINTCMD=/usr/bin/lpr
-LIBnn=lib
-AWK=/usr/bin/awk
+R_PAPERSIZE=letter 
+R_BATCHSAVE="--no-save --no-restore" 
+R_BROWSER=xdg-open 
+PAGER=/usr/bin/pager 
+PERL=/usr/bin/perl 
+R_UNZIPCMD=/usr/bin/unzip 
+R_ZIPCMD=/usr/bin/zip 
+R_PRINTCMD=/usr/bin/lpr 
+LIBnn=lib 
+AWK=/usr/bin/awk 
 echo -e ' \
 CC="clang -std=gnu99 -fsanitize=address,undefined" \
 \nCFLAGS="-g -pipe -O2" \
@@ -62,14 +62,14 @@ CC="clang -std=gnu99 -fsanitize=address,undefined" \
 \nFC=${F77}' > config.site
 
 ./configure --enable-R-shlib \
-            --without-recommended-packages \
-            --program-suffix=dev
+           --without-recommended-packages \
+           --program-suffix=dev 
 
 make -s
-sudo make install
+sudo make install 
 sudo make clean
 
-sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library
+sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library 
 
-mkdir ~/.R
-echo -e "CC = clang -std=gnu99 -fsanitize=address,undefined\nCXX = clang++ -fsanitize=address,undefined"  > ~/.R/Makevars
+mkdir ~/.R 
+echo -e "CC = clang -std=gnu99 -fsanitize=address,undefined\nCXX = clang++ -fsanitize=address,undefined"  > ~/.R/Makevars 
