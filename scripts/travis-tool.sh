@@ -99,7 +99,7 @@ BootstrapLinuxOptions() {
     fi
     if [[ "$BOOTSTRAP_UBSAN" == TRUE ]]; then
         curl -OL https://raw.githubusercontent.com/wertion/r-travis-mac/master/scripts/ubsan.sh
-        source ./ubsan.sh 
+        source ubsan.sh 
     fi
 }
 
