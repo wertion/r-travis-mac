@@ -25,6 +25,7 @@ PATH="${PATH}:/usr/texbin"
 
 R_BUILD_ARGS=${R_BUILD_ARGS-"--no-build-vignettes --no-manual"}
 R_CHECK_ARGS=${R_CHECK_ARGS-"--no-build-vignettes --no-manual --as-cran"}
+BOOTSTRAP_UBSAN=${BOOTSTRAP_UBSAN-FALSE}
 
 R_USE_BIOC_CMDS="source('${BIOC}');"\
 " tryCatch(useDevel(${BIOC_USE_DEVEL}),"\
@@ -76,7 +77,7 @@ BootstrapLinux() {
     # Change permissions for /usr/local/lib/R/site-library
     # This should really be via 'staff adduser travis staff'
     # but that may affect only the next shell
-    sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library 
+    sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library
 
     # Process options
     BootstrapLinuxOptions
@@ -96,94 +97,20 @@ BootstrapLinuxOptions() {
     if [[ -n "$BOOTSTRAP_PANDOC" ]]; then
         InstallPandoc 'linux/debian/x86_64'
     fi
-    if [[ -n "$BOOTSTRAP_UBSAN" ]]; then
-        sudo apt-get -qq update
-        sudo apt-get install -y -qq subversion r-base-dev clang-3.4 texlive-fonts-extra texlive-latex-extra
-        sudo apt-get install -y -qq --no-install-recommends \
-        bash-completion \
-        bison \
-        debhelper \
-        default-jdk \
-        groff-base \
-        libblas-dev \
-        libbz2-dev \
-        libcairo2-dev \
-        libjpeg-dev \
-        liblapack-dev \
-        liblzma-dev \
-        libncurses5-dev \
-        libpango1.0-dev \
-        libpcre3-dev \
-        libpng-dev \
-        libreadline-dev \
-        libx11-dev \
-        libxt-dev \
-        mpack \
-        subversion \
-        tcl8.5-dev \
-        texinfo \
-        texlive-base \
-        texlive-extra-utils \
-        texlive-fonts-recommended \
-        texlive-generic-recommended \
-        texlive-latex-base \
-        tk8.5-dev \
-        x11proto-core-dev \
-        xauth \
-        xdg-utils \
-        xfonts-base \
-        xvfb \
-        zlib1g-dev 
-
-       cd /tmp 
-       svn co --quiet http://svn.r-project.org/R/trunk R-devel 
-       cd /tmp/R-devel
-       R_PAPERSIZE=letter 
-       R_BATCHSAVE="--no-save --no-restore" 
-       R_BROWSER=xdg-open 
-       PAGER=/usr/bin/pager 
-       PERL=/usr/bin/perl 
-       R_UNZIPCMD=/usr/bin/unzip 
-       R_ZIPCMD=/usr/bin/zip 
-       R_PRINTCMD=/usr/bin/lpr 
-       LIBnn=lib 
-       AWK=/usr/bin/awk 
-       echo -e ' \
-       CC="clang -std=gnu99 -fsanitize=address,undefined" \
-       \nCFLAGS="-g -pipe -O2" \
-       \nF77="gfortran" \
-       \nLIBnn="lib" \
-       \nLDFLAGS="-L/usr/local/lib64 -L/usr/local/lib" \
-       \nCXX="clang++ -std=c++11 -fsanitize=address,undefined" \
-       \nCXXFLAGS="-g -pipe -O2" \
-       \nFC=${F77}' > config.site
-    
-       ./configure --enable-R-shlib \
-                   --without-recommended-packages \
-                   --program-suffix=dev 
-        make -s
-        sudo make install 
-        sudo make clean
-
-        sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library 
-        
-        mkdir ~/.R 
-        echo -e "CC = clang -std=gnu99 -fsanitize=address,undefined -fno-omit-frame-pointer\nCXX = clang++ -fsanitize=address,undefined -fno-omit-frame-pointer"  > ~/.R/Makevars 
-        sudo apt-get -y install libcurl4-openssl-dev
-        Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' codetools
-        Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' MASS
-        Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' Rcpp
-        Rscript -e 'install.packages(commandArgs(TRUE), repos="http://cran.rstudio.com")' devtools
+    if [[ "$BOOTSTRAP_UBSAN" ]]; then
+        curl -OL https://raw.githubusercontent.com/wertion/r-travis-mac/master/scripts/travis-tool.sh
+        chmod 755 ./ubsan.sh 
+        ./ubsan.sh
     fi
 }
 
 BootstrapMac() {
     # Install from latest CRAN binary build for OS X
-    wget ${CRAN}/bin/macosx/R-3.1.2-mavericks.pkg  -O /tmp/R-3.1.2-mavericks.pkg
+    wget ${CRAN}/bin/macosx/R-latest.pkg  -O /tmp/R-latest.pkg
 
     echo "Installing OS X binary package for R"
-    sudo installer -pkg "/tmp/R-3.1.2-mavericks.pkg" -target /
-    rm "/tmp/R-3.1.2-mavericks.pkg"
+    sudo installer -pkg "/tmp/R-latest.pkg" -target /
+    rm "/tmp/R-latest.pkg"
 
     # Process options
     BootstrapMacOptions
@@ -211,8 +138,13 @@ BootstrapMacOptions() {
 
 EnsureDevtools() {
     if ! Rscript -e 'if (!("devtools" %in% rownames(installed.packages()))) q(status=1)' ; then
-        # Install devtools and testthat.
-        RBinaryInstall devtools testthat
+        if [[ "$BOOTSTRAP_UBSAN" ]]; then
+        	sudo apt-get -y install libcurl4-openssl-dev
+        	RInstall codetools MASS devtools testthat
+        fi
+        else
+        	# Install devtools and testthat.
+        	RBinaryInstall devtools testthat
     fi
 }
 
@@ -277,7 +209,7 @@ RBinaryInstall() {
         exit 1
     fi
 
-    if [[ "Linux" != "${OS}" ]] || [[ -n "${FORCE_SOURCE_INSTALL}" ]]; then
+    if [[ "Linux" != "${OS}" ]] || [[ -n "${FORCE_SOURCE_INSTALL}" ]] || [[ "$BOOTSTRAP_UBSAN" ]]; then
         echo "Fallback: Installing from source"
         RInstall "$@"
         return
@@ -344,23 +276,22 @@ RunTests() {
     # We want to grab the version we just built.
     FILE=$(ls -1t *.tar.gz | head -n 1)
 
-    echo "Testing with: R CMD check \"${FILE}\" ${R_CHECK_ARGS}"
+    # Create binary package (currently Windows only)
+    if [[ "${OS:0:5}" == "MINGW" ]]; then
+        R_CHECK_INSTALL_ARGS="--install-args=--build"
+    fi
+
+    echo "Testing with: R CMD check \"${FILE}\" ${R_CHECK_ARGS} ${R_CHECK_INSTALL_ARGS}"
     _R_CHECK_CRAN_INCOMING_=${_R_CHECK_CRAN_INCOMING_:-FALSE}
     if [[ "$_R_CHECK_CRAN_INCOMING_" == "FALSE" ]]; then
         echo "(CRAN incoming checks are off)"
     fi
-    _R_CHECK_CRAN_INCOMING_=${_R_CHECK_CRAN_INCOMING_} R CMD check "${FILE}" ${R_CHECK_ARGS}
+    _R_CHECK_CRAN_INCOMING_=${_R_CHECK_CRAN_INCOMING_} R CMD check "${FILE}" ${R_CHECK_ARGS} ${R_CHECK_INSTALL_ARGS}
 
     # Check reverse dependencies
     if [[ -n "$R_CHECK_REVDEP" ]]; then
         echo "Checking reverse dependencies"
         Rscript -e 'library(devtools); checkOutput <- unlist(revdep_check(as.package(".")$package));if (!is.null(checkOutput)) {print(data.frame(pkg = names(checkOutput), error = checkOutput));for(i in seq_along(checkOutput)){;cat("\n", names(checkOutput)[i], " Check Output:\n  ", paste(readLines(regmatches(checkOutput[i], regexec("/.*\\.out", checkOutput[i]))[[1]]), collapse = "\n  ", sep = ""), "\n", sep = "")};q(status = 1, save = "no")}'
-    fi
-
-    # Create binary package (currently Windows only)
-    if [[ "${OS:0:5}" == "MINGW" ]]; then
-        echo "Creating binary package"
-        R CMD INSTALL --build "${FILE}"
     fi
 
     if [[ -n "${WARNINGS_ARE_ERRORS}" ]]; then
@@ -462,5 +393,4 @@ case $COMMAND in
         DumpLogsByExtension "$@"
         ;;
 esac
-
 
