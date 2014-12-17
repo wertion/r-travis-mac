@@ -71,5 +71,5 @@ sudo make clean
 
 sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library 
 
-mkdir ~/.R 
-echo -e "CC = clang -std=gnu99 -fsanitize=address,undefined\nCXX = clang++ -fsanitize=address,undefined"  > ~/.R/Makevars 
+mkdir -p ~/.R 
+echo -e "CC = clang -std=gnu99 -fsanitize=address,undefined\nCXX = clang++ -fsanitize=address,undefined"  > ~/.R/Makevars
