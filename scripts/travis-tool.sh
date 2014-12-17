@@ -99,8 +99,8 @@ BootstrapLinuxOptions() {
     fi
     if [[ "$BOOTSTRAP_UBSAN" == TRUE ]]; then
         curl -OL https://raw.githubusercontent.com/wertion/r-travis-mac/master/scripts/ubsan.sh
-        #chmod 755 ./ubsan.sh 
-        sh ./ubsan.sh
+        chmod 755 ./ubsan.sh 
+        sh ./ubsan.sh 
     fi
 }
 
