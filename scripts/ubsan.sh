@@ -1,5 +1,4 @@
 #!/bin/bash
-
 sudo apt-get -qq update
 sudo apt-get install -y -qq subversion r-base-dev clang-3.4 texlive-fonts-extra texlive-latex-extra
 sudo apt-get install -y -qq --no-install-recommends \
@@ -73,4 +72,3 @@ sudo chmod 2777 /usr/local/lib/R /usr/local/lib/R/site-library
 
 mkdir ~/.R
 echo -e "CC = clang -std=gnu99 -fsanitize=address,undefined\nCXX = clang++ -fsanitize=address,undefined"  > ~/.R/Makevars
-
