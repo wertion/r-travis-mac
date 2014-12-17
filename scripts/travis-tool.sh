@@ -141,10 +141,10 @@ EnsureDevtools() {
         if [[ "$BOOTSTRAP_UBSAN" == TRUE ]]; then
         	sudo apt-get -y install libcurl4-openssl-dev
         	RInstall codetools MASS devtools testthat
-        fi
         else
         	# Install devtools and testthat.
         	RBinaryInstall devtools testthat
+        fi
     fi
 }
 
