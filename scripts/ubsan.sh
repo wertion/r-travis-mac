@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -e
+# Comment out this line for quieter output:
+set -x
+
 sudo apt-get -qq update
 sudo apt-get install -y -qq subversion r-base-dev clang-3.4 texlive-fonts-extra texlive-latex-extra
 sudo apt-get install -y -qq --no-install-recommends \
