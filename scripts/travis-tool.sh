@@ -97,8 +97,8 @@ BootstrapLinuxOptions() {
     if [[ -n "$BOOTSTRAP_PANDOC" ]]; then
         InstallPandoc 'linux/debian/x86_64'
     fi
-    if [[ "$BOOTSTRAP_UBSAN" ]]; then
-        curl -OL https://raw.githubusercontent.com/wertion/r-travis-mac/master/scripts/travis-tool.sh
+    if [[ "$BOOTSTRAP_UBSAN" == TRUE ]]; then
+        curl -OL https://raw.githubusercontent.com/wertion/r-travis-mac/master/scripts/ubsan.sh
         chmod 755 ./ubsan.sh 
         ./ubsan.sh
     fi
@@ -138,7 +138,7 @@ BootstrapMacOptions() {
 
 EnsureDevtools() {
     if ! Rscript -e 'if (!("devtools" %in% rownames(installed.packages()))) q(status=1)' ; then
-        if [[ "$BOOTSTRAP_UBSAN" ]]; then
+        if [[ "$BOOTSTRAP_UBSAN" == TRUE ]]; then
         	sudo apt-get -y install libcurl4-openssl-dev
         	RInstall codetools MASS devtools testthat
         fi
@@ -209,7 +209,7 @@ RBinaryInstall() {
         exit 1
     fi
 
-    if [[ "Linux" != "${OS}" ]] || [[ -n "${FORCE_SOURCE_INSTALL}" ]] || [[ "$BOOTSTRAP_UBSAN" ]]; then
+    if [[ "Linux" != "${OS}" ]] || [[ -n "${FORCE_SOURCE_INSTALL}" ]] || [[ "$BOOTSTRAP_UBSAN" == TRUE ]]; then
         echo "Fallback: Installing from source"
         RInstall "$@"
         return
