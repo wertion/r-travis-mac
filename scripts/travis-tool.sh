@@ -109,7 +109,7 @@ BootstrapMac() {
 
     echo "Installing OS X binary package for R"
     sudo installer -pkg "/tmp/R-3.1.2-mavericks.pkg" -target /
-    rm "/tmp/R-latest.pkg"
+    rm "/tmp/R-3.1.2-mavericks.pkg"
 
     # Process options
     BootstrapMacOptions
