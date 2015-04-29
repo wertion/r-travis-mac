@@ -105,11 +105,11 @@ BootstrapLinuxOptions() {
 
 BootstrapMac() {
     # Install from latest CRAN binary build for OS X
-    wget ${CRAN}/bin/macosx/R-3.1.2-mavericks.pkg  -O /tmp/R-3.1.2-mavericks.pkg
+    wget ${CRAN}/bin/macosx/R-3.2.0.pkg  -O /tmp/R-3.2.0.pkg
 
     echo "Installing OS X binary package for R"
-    sudo installer -pkg "/tmp/R-3.1.2-mavericks.pkg" -target /
-    rm "/tmp/R-3.1.2-mavericks.pkg"
+    sudo installer -pkg "/tmp/R-3.2.0.pkg" -target /
+    rm "/tmp/R-3.2.0.pkg"
 
     # Process options
     BootstrapMacOptions
