@@ -11,8 +11,8 @@ BIOC=${BIOC:-"http://bioconductor.org/biocLite.R"}
 BIOC_USE_DEVEL=${BIOC_USE_DEVEL:-"TRUE"}
 OS=$(uname -s)
 
-PANDOC_VERSION='1.12.4.2'
-PANDOC_DIR="${HOME}/opt"
+PANDOC_VERSION='1.13.1'
+PANDOC_DIR="${HOME}/opt/pandoc"
 PANDOC_URL="https://s3.amazonaws.com/rstudio-buildtools/pandoc-${PANDOC_VERSION}.zip"
 
 # MacTeX installs in a new $PATH entry, and there's no way to force
@@ -25,7 +25,6 @@ PATH="${PATH}:/usr/texbin"
 
 R_BUILD_ARGS=${R_BUILD_ARGS-"--no-build-vignettes --no-manual"}
 R_CHECK_ARGS=${R_CHECK_ARGS-"--no-build-vignettes --no-manual --as-cran"}
-BOOTSTRAP_UBSAN=${BOOTSTRAP_UBSAN-FALSE}
 
 R_USE_BIOC_CMDS="source('${BIOC}');"\
 " tryCatch(useDevel(${BIOC_USE_DEVEL}),"\
@@ -54,6 +53,9 @@ InstallPandoc() {
     unzip -j /tmp/pandoc-${PANDOC_VERSION}.zip "pandoc-${PANDOC_VERSION}/${os_path}/pandoc" -d "${PANDOC_DIR}"
     chmod +x "${PANDOC_DIR}/pandoc"
     sudo ln -s "${PANDOC_DIR}/pandoc" /usr/local/bin
+    unzip -j /tmp/pandoc-${PANDOC_VERSION}.zip "pandoc-${PANDOC_VERSION}/${os_path}/pandoc-citeproc" -d "${PANDOC_DIR}"
+    chmod +x "${PANDOC_DIR}/pandoc-citeproc"
+    sudo ln -s "${PANDOC_DIR}/pandoc-citeproc" /usr/local/bin
 }
 
 BootstrapLinux() {
@@ -97,10 +99,6 @@ BootstrapLinuxOptions() {
     if [[ -n "$BOOTSTRAP_PANDOC" ]]; then
         InstallPandoc 'linux/debian/x86_64'
     fi
-    if [[ "$BOOTSTRAP_UBSAN" == TRUE ]]; then
-        curl -OL https://raw.githubusercontent.com/wertion/r-travis-mac/master/scripts/ubsan.sh
-        source ubsan.sh 
-    fi
 }
 
 BootstrapMac() {
@@ -118,7 +116,7 @@ BootstrapMac() {
 BootstrapMacOptions() {
     if [[ -n "$BOOTSTRAP_LATEX" ]]; then
         # TODO: Install MacTeX.pkg once there's enough disk space
-        MACTEX=mactex-basic.pkg
+        MACTEX=BasicTeX.pkg
         wget http://ctan.math.utah.edu/ctan/tex-archive/systems/mac/mactex/$MACTEX -O "/tmp/$MACTEX"
 
         echo "Installing OS X binary package for MacTeX"
@@ -137,13 +135,8 @@ BootstrapMacOptions() {
 
 EnsureDevtools() {
     if ! Rscript -e 'if (!("devtools" %in% rownames(installed.packages()))) q(status=1)' ; then
-        if [[ "$BOOTSTRAP_UBSAN" == TRUE ]]; then
-        	sudo apt-get -y install libcurl4-openssl-dev
-        	RInstall codetools MASS devtools testthat
-        else
-        	# Install devtools and testthat.
-        	RBinaryInstall devtools testthat
-        fi
+        # Install devtools and testthat.
+        RBinaryInstall devtools testthat
     fi
 }
 
@@ -208,7 +201,7 @@ RBinaryInstall() {
         exit 1
     fi
 
-    if [[ "Linux" != "${OS}" ]] || [[ -n "${FORCE_SOURCE_INSTALL}" ]] || [[ "$BOOTSTRAP_UBSAN" == TRUE ]]; then
+    if [[ "Linux" != "${OS}" ]] || [[ -n "${FORCE_SOURCE_INSTALL}" ]]; then
         echo "Fallback: Installing from source"
         RInstall "$@"
         return
@@ -392,4 +385,3 @@ case $COMMAND in
         DumpLogsByExtension "$@"
         ;;
 esac
-
